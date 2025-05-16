@@ -11,6 +11,6 @@ namespace TodoList.Core.DTOs
 
         public DateTime? DueDate { get; set; }
 
-        public int Priority { get; set; } = 0; // Default priority
+        public int Priority { get; set; } = 0;
     }
 }

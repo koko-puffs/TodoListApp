@@ -1,38 +1,27 @@
-// --- File: TodoApp.Core/Services/TaskService.cs ---
-// Implements the ITaskService interface, containing the application's business logic.
-// Depends on ITaskRepository via Dependency Injection, making it testable.
-using TodoList.Core.Interfaces; // Implements this interface, uses the other interface
-using TodoList.Core.Entities; // Works with these entities
-using TodoList.Core.DTOs;     // Uses filter DTO
+using TodoList.Core.Interfaces;
+using TodoList.Core.Entities;
+using TodoList.Core.DTOs;
 using System;
 using System.Collections.Generic;
-using System.Linq; // Needed for filtering, etc.
-using System.Threading.Tasks; // For async methods
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace TodoList.Core.Services
 {
-    /// <summary>
-    /// Provides the core application logic for managing To-Do tasks.
-    /// Orchestrates operations using an ITaskRepository.
-    /// </summary>
     public class TaskService : ITaskService
     {
         private readonly ITaskRepository _taskRepository;
 
-        // Dependency Injection via Constructor
         public TaskService(ITaskRepository taskRepository)
         {
             _taskRepository = taskRepository ?? throw new ArgumentNullException(nameof(taskRepository));
         }
 
-        // --- Basic CRUD Implementations ---
-
         public async Task<TodoTask> AddTaskAsync(string description, DateTime? dueDate = null, int priority = 0)
         {
-            // Validation is handled by the TodoTask constructor/setter for description
             var newTask = new TodoTask(description)
             {
-                DueDate = dueDate?.ToUniversalTime(), // Store dates in UTC
+                DueDate = dueDate?.ToUniversalTime(),
                 Priority = priority
             };
             return await _taskRepository.AddAsync(newTask);
@@ -60,7 +49,6 @@ namespace TodoList.Core.Services
         public async Task UpdateTaskDescriptionAsync(int id, string newDescription)
         {
             var task = await GetTaskOrThrowNotFoundAsync(id);
-            // Validation handled by property setter
             task.Description = newDescription;
             await _taskRepository.UpdateAsync(task);
         }
@@ -68,15 +56,13 @@ namespace TodoList.Core.Services
          public async Task UpdateTaskDueDateAsync(int id, DateTime? newDueDate)
         {
             var task = await GetTaskOrThrowNotFoundAsync(id);
-            var newUtcDate = newDueDate?.ToUniversalTime(); // Ensure UTC
+            var newUtcDate = newDueDate?.ToUniversalTime();
             if (task.DueDate != newUtcDate)
             {
                 task.DueDate = newUtcDate;
                 await _taskRepository.UpdateAsync(task);
             }
         }
-
-        // --- Status Update Implementations ---
 
         public async Task MarkTaskCompleteAsync(int id)
         {
@@ -98,24 +84,16 @@ namespace TodoList.Core.Services
             }
         }
 
-        // --- Advanced Feature Implementations ---
-
         public async Task<IEnumerable<TodoTask>> GetActiveTasksAsync()
         {
-            // Delegate directly if repository supports it efficiently
             return await _taskRepository.GetActiveAsync();
-            // Alternative if repo doesn't have GetActiveAsync:
-            // var allTasks = await _taskRepository.GetAllAsync();
-            // return allTasks.Where(t => !t.IsCompleted);
         }
 
         public async Task<IEnumerable<TodoTask>> GetTasksByCriteriaAsync(TaskFilterCriteria criteria)
         {
-            // Fetch all tasks - Optimization: If using a DB, build a dynamic query instead.
             var allTasks = await _taskRepository.GetAllAsync();
 
-            // Apply filtering logic in memory
-            IEnumerable<TodoTask> filteredTasks = allTasks; // Start with all
+            IEnumerable<TodoTask> filteredTasks = allTasks;
 
             if (!string.IsNullOrWhiteSpace(criteria.Keyword))
             {
@@ -141,12 +119,12 @@ namespace TodoList.Core.Services
                 filteredTasks = filteredTasks.Where(t => t.Priority == criteria.PriorityLevel.Value);
             }
 
-            return filteredTasks.ToList(); // Materialize the result
+            return filteredTasks.ToList();
         }
 
         public async Task<IEnumerable<TodoTask>> GetOverdueTasksAsync()
         {
-            var activeTasks = await _taskRepository.GetActiveAsync(); // More efficient
+            var activeTasks = await _taskRepository.GetActiveAsync();
             var now = DateTime.UtcNow;
             return activeTasks.Where(t => t.DueDate.HasValue && t.DueDate.Value < now).ToList();
         }
@@ -165,9 +143,8 @@ namespace TodoList.Core.Services
         {
             var task = await GetTaskOrThrowNotFoundAsync(id);
             var now = DateTime.UtcNow;
-            int calculatedPriority = 0; // Default priority
+            int calculatedPriority = 0;
 
-            // --- Example Priority Rules (Complex Logic for White-Box Testing) ---
             bool isOverdue = task.DueDate.HasValue && task.DueDate.Value < now && !task.IsCompleted;
             bool containsUrgentKeyword = task.Description.Contains("urgent", StringComparison.OrdinalIgnoreCase) ||
                                          task.Description.Contains("critical", StringComparison.OrdinalIgnoreCase);
@@ -175,23 +152,21 @@ namespace TodoList.Core.Services
 
             if (isOverdue && containsUrgentKeyword)
             {
-                calculatedPriority = 2; // Highest priority
+                calculatedPriority = 2;
             }
             else if (isOverdue || containsUrgentKeyword)
             {
-                calculatedPriority = 1; // High priority
+                calculatedPriority = 1;
             }
             else if (isDueSoon)
             {
-                 calculatedPriority = 0; // Normal, but maybe flag? (Could return more info)
+                 calculatedPriority = 0;
             }
             else
             {
-                 calculatedPriority = -1; // Low priority (example)
+                 calculatedPriority = -1;
             }
-            // --- End Example Priority Rules ---
 
-            // Update only if changed
             if (task.Priority != calculatedPriority)
             {
                 task.Priority = calculatedPriority;
@@ -199,39 +174,32 @@ namespace TodoList.Core.Services
             }
         }
 
-
-        // --- Batch Operation Implementations ---
-
         public async Task DeleteTasksAsync(IEnumerable<int> ids)
         {
-            if (ids == null || !ids.Any()) return; // Nothing to do
+            if (ids == null || !ids.Any()) return;
 
             List<Exception> errors = new List<Exception>();
-            foreach (var id in ids.Distinct()) // Process unique IDs
+            foreach (var id in ids.Distinct())
             {
                 try
                 {
-                    // We need to check existence before deleting, as DeleteAsync might throw or do nothing
                     if (await _taskRepository.ExistsAsync(id))
                     {
                         await _taskRepository.DeleteAsync(id);
                     }
                     else
                     {
-                        // Collect errors for non-existent tasks if strict behavior is needed
                         errors.Add(new KeyNotFoundException($"Task with ID {id} not found for deletion during batch operation."));
                     }
                 }
-                catch (Exception ex) when (ex is not KeyNotFoundException) // Catch unexpected errors
+                catch (Exception ex) when (ex is not KeyNotFoundException)
                 {
-                    // Log error and collect it
                     errors.Add(new InvalidOperationException($"Failed to delete task ID {id} during batch operation.", ex));
                 }
             }
 
             if (errors.Any())
             {
-                // Throw an aggregate exception summarizing the issues
                 throw new AggregateException("One or more errors occurred during batch delete.", errors);
             }
         }
@@ -241,11 +209,10 @@ namespace TodoList.Core.Services
             if (ids == null || !ids.Any()) return;
 
             List<Exception> errors = new List<Exception>();
-            foreach (var id in ids.Distinct()) // Process unique IDs
+            foreach (var id in ids.Distinct())
             {
                 try
                 {
-                    // Reuse single-item logic which includes checks and update logic
                     if (isComplete)
                     {
                         await MarkTaskCompleteAsync(id);
@@ -255,11 +222,11 @@ namespace TodoList.Core.Services
                         await MarkTaskIncompleteAsync(id);
                     }
                 }
-                catch (KeyNotFoundException knfex) // Expected error if ID doesn't exist
+                catch (KeyNotFoundException knfex)
                 {
-                     errors.Add(knfex); // Collect the error
+                     errors.Add(knfex);
                 }
-                catch (Exception ex) // Catch unexpected errors
+                catch (Exception ex)
                 {
                     errors.Add(new InvalidOperationException($"Failed to update completion status for task ID {id}.", ex));
                 }
@@ -270,12 +237,6 @@ namespace TodoList.Core.Services
             }
         }
 
-        // --- Private Helper Methods ---
-
-        /// <summary>
-        /// Retrieves a task by ID or throws a KeyNotFoundException if it doesn't exist.
-        /// Reduces repetition in other service methods.
-        /// </summary>
         private async Task<TodoTask> GetTaskOrThrowNotFoundAsync(int id)
         {
             var task = await _taskRepository.GetByIdAsync(id);
