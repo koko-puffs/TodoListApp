@@ -1,0 +1,15 @@
+c:\Users\aerom\Downloads\TodoListApp\TodoList.Infrastructure\bin\Debug\net9.0\TodoList.Infrastructure.deps.json
+c:\Users\aerom\Downloads\TodoListApp\TodoList.Infrastructure\obj\Debug\net9.0\TodoList.Infrastructure.GeneratedMSBuildEditorConfig.editorconfig
+c:\Users\aerom\Downloads\TodoListApp\TodoList.Infrastructure\obj\Debug\net9.0\TodoList.Infrastructure.AssemblyInfoInputs.cache
+c:\Users\aerom\Downloads\TodoListApp\TodoList.Infrastructure\obj\Debug\net9.0\TodoList.Infrastructure.AssemblyInfo.cs
+c:\Users\aerom\Downloads\TodoListApp\TodoList.Infrastructure\obj\Debug\net9.0\TodoList.174662ED.Up2Date
+C:\Users\aerom\Downloads\TodoListApp\TodoList.Infrastructure\bin\Debug\net9.0\TodoList.Infrastructure.dll
+C:\Users\aerom\Downloads\TodoListApp\TodoList.Infrastructure\bin\Debug\net9.0\TodoList.Infrastructure.pdb
+C:\Users\aerom\Downloads\TodoListApp\TodoList.Infrastructure\bin\Debug\net9.0\TodoList.Core.dll
+C:\Users\aerom\Downloads\TodoListApp\TodoList.Infrastructure\bin\Debug\net9.0\TodoList.Core.pdb
+C:\Users\aerom\Downloads\TodoListApp\TodoList.Infrastructure\obj\Debug\net9.0\TodoList.Infrastructure.csproj.AssemblyReference.cache
+C:\Users\aerom\Downloads\TodoListApp\TodoList.Infrastructure\obj\Debug\net9.0\TodoList.Infrastructure.csproj.CoreCompileInputs.cache
+C:\Users\aerom\Downloads\TodoListApp\TodoList.Infrastructure\obj\Debug\net9.0\TodoList.Infrastructure.dll
+C:\Users\aerom\Downloads\TodoListApp\TodoList.Infrastructure\obj\Debug\net9.0\refint\TodoList.Infrastructure.dll
+C:\Users\aerom\Downloads\TodoListApp\TodoList.Infrastructure\obj\Debug\net9.0\TodoList.Infrastructure.pdb
+C:\Users\aerom\Downloads\TodoListApp\TodoList.Infrastructure\obj\Debug\net9.0\ref\TodoList.Infrastructure.dll

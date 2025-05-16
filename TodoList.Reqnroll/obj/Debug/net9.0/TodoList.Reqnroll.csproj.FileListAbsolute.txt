@@ -1,0 +1,15 @@
+c:\Users\aerom\Downloads\TodoListApp\TodoList.Reqnroll\bin\Debug\net9.0\.msCoverageSourceRootsMapping_TodoList.Reqnroll
+c:\Users\aerom\Downloads\TodoListApp\TodoList.Reqnroll\bin\Debug\net9.0\CoverletSourceRootsMapping_TodoList.Reqnroll
+c:\Users\aerom\Downloads\TodoListApp\TodoList.Reqnroll\bin\Debug\net9.0\testhost.dll
+c:\Users\aerom\Downloads\TodoListApp\TodoList.Reqnroll\bin\Debug\net9.0\Reqnroll.xUnit.ReqnrollPlugin.dll
+c:\Users\aerom\Downloads\TodoListApp\TodoList.Reqnroll\bin\Debug\net9.0\testhost.exe
+c:\Users\aerom\Downloads\TodoListApp\TodoList.Reqnroll\bin\Debug\net9.0\xunit.runner.visualstudio.testadapter.dll
+c:\Users\aerom\Downloads\TodoListApp\TodoList.Reqnroll\bin\Debug\net9.0\xunit.runner.reporters.netcoreapp10.dll
+c:\Users\aerom\Downloads\TodoListApp\TodoList.Reqnroll\bin\Debug\net9.0\xunit.runner.utility.netcoreapp10.dll
+c:\Users\aerom\Downloads\TodoListApp\TodoList.Reqnroll\bin\Debug\net9.0\TodoList.Reqnroll.deps.json
+c:\Users\aerom\Downloads\TodoListApp\TodoList.Reqnroll\bin\Debug\net9.0\TodoList.Reqnroll.runtimeconfig.json
+c:\Users\aerom\Downloads\TodoListApp\TodoList.Reqnroll\obj\Debug\net9.0\TodoList.Reqnroll.GeneratedMSBuildEditorConfig.editorconfig
+c:\Users\aerom\Downloads\TodoListApp\TodoList.Reqnroll\obj\Debug\net9.0\TodoList.Reqnroll.AssemblyInfoInputs.cache
+c:\Users\aerom\Downloads\TodoListApp\TodoList.Reqnroll\obj\Debug\net9.0\TodoList.Reqnroll.AssemblyInfo.cs
+c:\Users\aerom\Downloads\TodoListApp\TodoList.Reqnroll\obj\Debug\net9.0\TodoList.BFE4F452.Up2Date
+c:\Users\aerom\Downloads\TodoListApp\TodoList.Reqnroll\obj\Debug\net9.0\TodoList.Reqnroll.genruntimeconfig.cache

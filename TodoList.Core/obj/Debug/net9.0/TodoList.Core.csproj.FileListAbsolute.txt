@@ -1,0 +1,11 @@
+c:\Users\aerom\Downloads\TodoListApp\TodoList.Core\bin\Debug\net9.0\TodoList.Core.deps.json
+c:\Users\aerom\Downloads\TodoListApp\TodoList.Core\obj\Debug\net9.0\TodoList.Core.GeneratedMSBuildEditorConfig.editorconfig
+c:\Users\aerom\Downloads\TodoListApp\TodoList.Core\obj\Debug\net9.0\TodoList.Core.AssemblyInfoInputs.cache
+c:\Users\aerom\Downloads\TodoListApp\TodoList.Core\obj\Debug\net9.0\TodoList.Core.AssemblyInfo.cs
+C:\Users\aerom\Downloads\TodoListApp\TodoList.Core\bin\Debug\net9.0\TodoList.Core.dll
+C:\Users\aerom\Downloads\TodoListApp\TodoList.Core\bin\Debug\net9.0\TodoList.Core.pdb
+C:\Users\aerom\Downloads\TodoListApp\TodoList.Core\obj\Debug\net9.0\TodoList.Core.csproj.CoreCompileInputs.cache
+C:\Users\aerom\Downloads\TodoListApp\TodoList.Core\obj\Debug\net9.0\TodoList.Core.dll
+C:\Users\aerom\Downloads\TodoListApp\TodoList.Core\obj\Debug\net9.0\refint\TodoList.Core.dll
+C:\Users\aerom\Downloads\TodoListApp\TodoList.Core\obj\Debug\net9.0\TodoList.Core.pdb
+C:\Users\aerom\Downloads\TodoListApp\TodoList.Core\obj\Debug\net9.0\ref\TodoList.Core.dll
