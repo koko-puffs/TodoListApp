@@ -2,9 +2,6 @@ using Microsoft.AspNetCore.Mvc;
 using TodoList.Core.Entities;
 using TodoList.Core.Interfaces;
 using TodoList.Core.DTOs;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using System.Linq;
 
 namespace TodoList.WebApi.Controllers
 {

@@ -1,5 +1,3 @@
-using System;
-
 namespace TodoList.Core.DTOs
 {
     public class UpdateTaskDueDateRequest

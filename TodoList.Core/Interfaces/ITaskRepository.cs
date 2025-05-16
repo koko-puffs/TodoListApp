@@ -1,6 +1,4 @@
 using TodoList.Core.Entities;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace TodoList.Core.Interfaces
 {
