@@ -1,20 +1,15 @@
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
-using TodoList.Core.Interfaces; // Contains ITaskRepository, ITaskService, ITodoItemRepository, ITodoItemService
-using TodoList.Infrastructure.Data; // Contains AppDbContext
-using TodoList.Infrastructure.Repositories; // Contains TaskRepository, TodoItemRepository
-using TodoList.Core.Services; // Contains TaskService, TodoItemService
+using TodoList.Core.Interfaces;
+using TodoList.Infrastructure.Data;
+using TodoList.Infrastructure.Repositories;
+using TodoList.Core.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
 // Configure DbContext to use in-memory database
-// For TodoItemRepository and TaskRepository
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseInMemoryDatabase("TodoListDb"));
 
@@ -34,7 +29,7 @@ builder.Services.AddSwaggerGen(c =>
     { 
         Title = "TodoList API", 
         Version = "v1",
-        Description = "An API for managing Todo items and Tasks."
+        Description = "An API for managing Tasks."
     });
 });
 
@@ -53,7 +48,7 @@ if (app.Environment.IsDevelopment())
     });
 }
 
-// app.UseHttpsRedirection(); // HTTPS is good practice for production
+// app.UseHttpsRedirection();
 
 app.UseRouting();
 
