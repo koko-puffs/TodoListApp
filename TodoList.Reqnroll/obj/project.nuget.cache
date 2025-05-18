@@ -1,12 +1,13 @@
 {
   "version": 2,
-  "dgSpecHash": "hA6vBLLVrSk=",
+  "dgSpecHash": "SLSHE7QkCEs=",
   "success": true,
   "projectFilePath": "C:\\Users\\aerom\\Downloads\\TodoListApp\\TodoList.Reqnroll\\TodoList.Reqnroll.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\aerom\\.nuget\\packages\\castle.core\\5.1.1\\castle.core.5.1.1.nupkg.sha512",
     "C:\\Users\\aerom\\.nuget\\packages\\coverlet.collector\\6.0.2\\coverlet.collector.6.0.2.nupkg.sha512",
     "C:\\Users\\aerom\\.nuget\\packages\\cucumber.cucumberexpressions\\17.1.0\\cucumber.cucumberexpressions.17.1.0.nupkg.sha512",
+    "C:\\Users\\aerom\\.nuget\\packages\\fluentassertions\\8.2.0\\fluentassertions.8.2.0.nupkg.sha512",
     "C:\\Users\\aerom\\.nuget\\packages\\gherkin\\30.0.0\\gherkin.30.0.0.nupkg.sha512",
     "C:\\Users\\aerom\\.nuget\\packages\\microsoft.aspnetcore.openapi\\9.0.5\\microsoft.aspnetcore.openapi.9.0.5.nupkg.sha512",
     "C:\\Users\\aerom\\.nuget\\packages\\microsoft.codecoverage\\17.12.0\\microsoft.codecoverage.17.12.0.nupkg.sha512",

@@ -4,14 +4,15 @@ namespace TodoList.Core.Entities
     {
         public int Id { get; set; }
 
-        private string _description = string.Empty;
-        public string Description
+        private string? _description;
+        public string? Description
         {
             get => _description;
             set
             {
-                if (string.IsNullOrWhiteSpace(value))
-                    throw new ArgumentException("Description cannot be empty or whitespace.", nameof(Description));
+                // Allow null, but if not null, it cannot be empty or whitespace.
+                if (value != null && string.IsNullOrWhiteSpace(value))
+                    throw new ArgumentException("Description, if provided, cannot be empty or whitespace.", nameof(Description));
                 _description = value;
             }
         }
@@ -24,7 +25,7 @@ namespace TodoList.Core.Entities
 
         public int Priority { get; set; }
 
-        public TodoTask(string description)
+        public TodoTask(string? description)
         {
             Description = description;
             IsCompleted = false;
@@ -34,7 +35,11 @@ namespace TodoList.Core.Entities
 
         public TodoTask()
         {
-             _description = "Temporary Description - Please Update";
+             // This assignment is fine if it's meant to be a non-null default
+             // when the parameterless constructor is used. It's not null or whitespace.
+             _description = "Temporary Description - Please Update"; 
+             // If Description should be null by default with this constructor, then: 
+             // _description = null;
              CreatedDate = DateTime.UtcNow;
         }
     }

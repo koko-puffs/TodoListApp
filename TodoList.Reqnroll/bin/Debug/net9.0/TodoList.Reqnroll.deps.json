@@ -8,6 +8,7 @@
     ".NETCoreApp,Version=v9.0": {
       "TodoList.Reqnroll/1.0.0": {
         "dependencies": {
+          "FluentAssertions": "8.2.0",
           "Microsoft.NET.Test.Sdk": "17.12.0",
           "Moq": "4.20.72",
           "Reqnroll.xUnit": "2.4.0",
@@ -39,6 +40,14 @@
           "lib/netstandard2.0/CucumberExpressions.dll": {
             "assemblyVersion": "17.1.0.0",
             "fileVersion": "17.1.0.0"
+          }
+        }
+      },
+      "FluentAssertions/8.2.0": {
+        "runtime": {
+          "lib/net6.0/FluentAssertions.dll": {
+            "assemblyVersion": "8.2.0.0",
+            "fileVersion": "8.2.0.0"
           }
         }
       },
@@ -642,6 +651,13 @@
       "sha512": "sha512-IZFDLLwrUCKuGDXQzmAWZa+kQFpVmVwWD8wEl0UWGOR83UQfzqg8hZeSSNUOXlW0Kh3vMO6kEm3FpNC4amKMaw==",
       "path": "cucumber.cucumberexpressions/17.1.0",
       "hashPath": "cucumber.cucumberexpressions.17.1.0.nupkg.sha512"
+    },
+    "FluentAssertions/8.2.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-Gh4jkECcrR0i17ofCVqsiVz2+lxC+p5TYFPCrbZFi7eQQWGEZhvCDwvhycBKX1Kmtbd+H2CW/ugW7wdH9Br9NQ==",
+      "path": "fluentassertions/8.2.0",
+      "hashPath": "fluentassertions.8.2.0.nupkg.sha512"
     },
     "Gherkin/30.0.0": {
       "type": "package",
