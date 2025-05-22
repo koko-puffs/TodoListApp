@@ -32,8 +32,7 @@ namespace TodoList.Infrastructure.Repositories
         public async Task<TodoTask> AddAsync(TodoTask task)
         {
             if (task == null) throw new ArgumentNullException(nameof(task));
-            
-            // Ensure CreatedDate is set if not already provided by the caller (though typically service layer might handle this)
+
             if (task.CreatedDate == default)
             {
                 task.CreatedDate = DateTime.UtcNow;
@@ -54,13 +53,8 @@ namespace TodoList.Infrastructure.Repositories
                 throw new KeyNotFoundException($"Task with ID {task.Id} not found.");
             }
 
-            // Update the properties of the tracked entity.
-            // This approach ensures that only properties present in TodoTask are updated
-            // and respects the entity's internal logic if any (e.g., setters).
             _context.Entry(existingTask).CurrentValues.SetValues(task);
             
-            // If you want to handle concurrency, you might need to handle DbUpdateConcurrencyException here
-            // or ensure the 'task' object passed in has a row version/timestamp if used.
             await _context.SaveChangesAsync();
         }
 
@@ -74,8 +68,6 @@ namespace TodoList.Infrastructure.Repositories
             }
             else
             {
-                // The interface doc comment says: "May be thrown by implementation if the task ID does not exist."
-                // So, throwing an exception is consistent.
                 throw new KeyNotFoundException($"Task with ID {id} not found for deletion.");
             }
         }

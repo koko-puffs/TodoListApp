@@ -1071,11 +1071,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\aerom\\Downloads\\TodoListApp\\TodoList.WebApi\\TodoList.WebApi.csproj",
+      "projectUniqueName": "c:\\Users\\aerom\\Downloads\\TodoListApp\\TodoList.WebApi\\TodoList.WebApi.csproj",
       "projectName": "TodoList.WebApi",
-      "projectPath": "C:\\Users\\aerom\\Downloads\\TodoListApp\\TodoList.WebApi\\TodoList.WebApi.csproj",
+      "projectPath": "c:\\Users\\aerom\\Downloads\\TodoListApp\\TodoList.WebApi\\TodoList.WebApi.csproj",
       "packagesPath": "C:\\Users\\aerom\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\aerom\\Downloads\\TodoListApp\\TodoList.WebApi\\obj\\",
+      "outputPath": "c:\\Users\\aerom\\Downloads\\TodoListApp\\TodoList.WebApi\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

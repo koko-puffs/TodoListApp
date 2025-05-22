@@ -10,7 +10,6 @@ namespace TodoList.Core.Entities
             get => _description;
             set
             {
-                // Allow null, but if not null, it cannot be empty or whitespace.
                 if (value != null && string.IsNullOrWhiteSpace(value))
                     throw new ArgumentException("Description, if provided, cannot be empty or whitespace.", nameof(Description));
                 _description = value;
@@ -35,11 +34,7 @@ namespace TodoList.Core.Entities
 
         public TodoTask()
         {
-             // This assignment is fine if it's meant to be a non-null default
-             // when the parameterless constructor is used. It's not null or whitespace.
-             _description = "Temporary Description - Please Update"; 
-             // If Description should be null by default with this constructor, then: 
-             // _description = null;
+             _description = "Please Update"; 
              CreatedDate = DateTime.UtcNow;
         }
     }

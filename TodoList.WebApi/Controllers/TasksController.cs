@@ -75,7 +75,7 @@ namespace TodoList.WebApi.Controllers
         [HttpPut("{id}/duedate")]
         public async Task<IActionResult> UpdateTaskDueDate(int id, [FromBody] UpdateTaskDueDateRequest requestDto)
         {
-            if (!ModelState.IsValid) // Though this DTO currently has no validation attributes
+            if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
@@ -94,7 +94,7 @@ namespace TodoList.WebApi.Controllers
         [HttpPut("{id}/priority")]
         public async Task<IActionResult> UpdateTaskPriority(int id, [FromBody] UpdateTaskPriorityRequest requestDto)
         {
-             if (!ModelState.IsValid) // Though this DTO currently has no validation attributes
+             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
@@ -174,7 +174,7 @@ namespace TodoList.WebApi.Controllers
             try
             {
                 await _taskService.RecalculatePriorityBasedOnRulesAsync(id);
-                return NoContent(); // Or return the updated task/priority if preferred
+                return NoContent();
             }
             catch (KeyNotFoundException ex)
             {
@@ -206,7 +206,7 @@ namespace TodoList.WebApi.Controllers
                 return BadRequest(ModelState);
             }
             await _taskService.DeleteTasksAsync(requestDto.Ids);
-            return Ok("Batch delete operation attempted. Check individual results if service provides them."); // Consider returning detailed results
+            return Ok("Batch delete operation attempted.");
         }
 
         // POST: api/Tasks/batch-mark-complete
@@ -218,7 +218,7 @@ namespace TodoList.WebApi.Controllers
                 return BadRequest(ModelState);
             }
             await _taskService.MarkTasksCompleteStatusAsync(requestDto.Ids, requestDto.IsComplete);
-            return Ok($"Batch mark as '{(requestDto.IsComplete ? "complete" : "incomplete")}' operation attempted. Check individual results if service provides them."); // Consider returning detailed results
+            return Ok($"Batch mark as '{(requestDto.IsComplete ? "complete" : "incomplete")}' operation attempted.");
         }
     }
 }

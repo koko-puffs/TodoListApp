@@ -3,7 +3,7 @@ using TodoList.Core.Entities;
 using TodoList.Core.Interfaces;
 using TodoList.Core.Services;
 
-namespace TodoList.UnitTests // Adjusted namespace
+namespace TodoList.UnitTests
 {
     public class TaskServiceTests
     {
@@ -17,7 +17,7 @@ namespace TodoList.UnitTests // Adjusted namespace
         }
 
         [Theory]
-        // Test Case Data: Description, DueDayOffset (from _fixedNow.Date), IsCompleted, InitialPriority, ExpectedPriority, UpdateOccurs
+        // Test Case Data: Description, DueDayOffset, IsCompleted, InitialPriority, ExpectedPriority, UpdateOccurs
         [InlineData("urgent task", -1, false, 0, 2, true)]
         [InlineData("critical task", -1, false, 2, 2, false)]
         [InlineData("urgent old task", -1, true, 0, 1, true)]
@@ -29,7 +29,7 @@ namespace TodoList.UnitTests // Adjusted namespace
         [InlineData("task no due date", null, false, 0, -1, true)]
         [InlineData("overdue task", -1, false, 0, 1, true)]
 
-        public async Task RecalculatePriorityBasedOnRulesAsync_ShouldSetCorrectPriority_And_UpdateIfNeeded(
+        public async Task RecalculatePriorityBasedOnRulesAsync_VariousTasks_CorrectPriorityAndUpdateIfNeeded(
             string description,
             int? dueDayOffset,
             bool isCompleted,
@@ -70,7 +70,7 @@ namespace TodoList.UnitTests // Adjusted namespace
         }
 
         [Fact]
-        public async Task RecalculatePriorityBasedOnRulesAsync_ShouldThrow_WhenTaskNotFound()
+        public async Task RecalculatePriorityBasedOnRulesAsync_InvalidTaskId_ThrowsKeyNotFoundException()
         {
             // Arrange
             var taskId = 999;

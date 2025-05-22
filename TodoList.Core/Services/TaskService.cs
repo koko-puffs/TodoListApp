@@ -138,29 +138,44 @@ namespace TodoList.Core.Services
         public async Task RecalculatePriorityBasedOnRulesAsync(int id)
         {
             var task = await GetTaskOrThrowNotFoundAsync(id);
+
+            if (task.Description == null)
+            {
+                throw new InvalidOperationException("Task description cannot be null for priority recalculation.");
+            }
+
             var now = DateTime.UtcNow;
             int calculatedPriority = 0;
+            string description = task.Description; // No longer needs ?? string.Empty due to the check above
 
-            bool isOverdue = task.DueDate.HasValue && task.DueDate.Value < now && !task.IsCompleted;
-            bool containsUrgentKeyword = task.Description.Contains("urgent", StringComparison.OrdinalIgnoreCase) ||
-                                         task.Description.Contains("critical", StringComparison.OrdinalIgnoreCase);
-            bool isDueSoon = task.DueDate.HasValue && task.DueDate.Value >= now && task.DueDate.Value < now.AddDays(2) && !task.IsCompleted;
-
-            if (isOverdue && containsUrgentKeyword)
+            if (task.IsCompleted)
             {
-                calculatedPriority = 2;
-            }
-            else if (isOverdue || containsUrgentKeyword)
-            {
-                calculatedPriority = 1;
-            }
-            else if (isDueSoon)
-            {
-                 calculatedPriority = 0;
+                calculatedPriority = -1;
             }
             else
             {
-                 calculatedPriority = -1;
+                // Logic for active tasks
+                bool isOverdue = task.DueDate.HasValue && task.DueDate.Value < now;
+                bool containsUrgentKeyword = description.Contains("urgent", StringComparison.OrdinalIgnoreCase) ||
+                                             description.Contains("critical", StringComparison.OrdinalIgnoreCase);
+                bool isDueSoon = task.DueDate.HasValue && task.DueDate.Value >= now && task.DueDate.Value < now.AddDays(2);
+
+                if (isOverdue && containsUrgentKeyword)
+                {
+                    calculatedPriority = 2;
+                }
+                else if (isOverdue || containsUrgentKeyword)
+                {
+                    calculatedPriority = 1;
+                }
+                else if (isDueSoon)
+                {
+                     calculatedPriority = 0;
+                }
+                else
+                {
+                     calculatedPriority = -1;
+                }
             }
 
             if (task.Priority != calculatedPriority)

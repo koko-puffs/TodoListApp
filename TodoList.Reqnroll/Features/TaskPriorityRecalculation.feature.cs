@@ -26,8 +26,8 @@ namespace TodoList.Reqnroll.Features
         
         private static string[] featureTags = ((string[])(null));
         
-        private static global::Reqnroll.FeatureInfo featureInfo = new global::Reqnroll.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "Features", "Task Priority Recalculation", "  As a system admin\r\n  I want the task priority to be recalculated based on speci" +
-                "fic rules\r\n  So that tasks are appropriately prioritized", global::Reqnroll.ProgrammingLanguage.CSharp, featureTags);
+        private static global::Reqnroll.FeatureInfo featureInfo = new global::Reqnroll.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "Features", "Task Priority Recalculation", "  As a user\r\n  I want the task priority to be recalculated based on specific rule" +
+                "s\r\n  So that tasks are appropriately prioritized", global::Reqnroll.ProgrammingLanguage.CSharp, featureTags);
         
         private Xunit.Abstractions.ITestOutputHelper _testOutputHelper;
         
@@ -88,7 +88,7 @@ namespace TodoList.Reqnroll.Features
 #line 6
 #line hidden
 #line 7
-  await testRunner.GivenAsync("the current date is fixed for testing", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
+  await testRunner.GivenAsync("the current date is today for testing", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
 #line hidden
         }
         
@@ -105,29 +105,28 @@ namespace TodoList.Reqnroll.Features
         [Xunit.SkippableTheoryAttribute(DisplayName="Priority recalculation based on due date, keywords, and completion status")]
         [Xunit.TraitAttribute("FeatureTitle", "Task Priority Recalculation")]
         [Xunit.TraitAttribute("Description", "Priority recalculation based on due date, keywords, and completion status")]
-        [Xunit.InlineDataAttribute("1", "\"urgent task\"", "\"Today - 1 day\"", "\"not completed\"", "0", "2", "\"performed\"", "TC1: Overdue, \"urgent\"", new string[0])]
-        [Xunit.InlineDataAttribute("2", "\"critical task\"", "\"Today - 1 day\"", "\"not completed\"", "2", "2", "\"skipped\"", "TC2: Overdue, \"critical\", Prio same", new string[0])]
-        [Xunit.InlineDataAttribute("3", "\"urgent critical task\"", "\"Today - 1 day\"", "\"not completed\"", "0", "2", "\"performed\"", "TC3: Overdue, \"urgent\" & \"critical\"", new string[0])]
-        [Xunit.InlineDataAttribute("4", "\"plain task\"", "\"Today - 1 day\"", "\"not completed\"", "0", "1", "\"performed\"", "TC4: Overdue, No keywords", new string[0])]
-        [Xunit.InlineDataAttribute("5", "\"plain task due soon\"", "\"Today + 1 day\"", "\"not completed\"", "1", "0", "\"performed\"", "TC5: Due Soon, No keywords", new string[0])]
-        [Xunit.InlineDataAttribute("6", "\"plain task far future\"", "\"Today + 3 days\"", "\"not completed\"", "0", "-1", "\"performed\"", "TC6: Far Future, No keywords", new string[0])]
-        [Xunit.InlineDataAttribute("7", "\"task with no due date\"", "\"null\"", "\"not completed\"", "0", "-1", "\"performed\"", "TC7: No DueDate, No keywords", new string[0])]
-        [Xunit.InlineDataAttribute("8", "\"urgent completed task\"", "\"Today - 1 day\"", "\"completed\"", "2", "-1", "\"performed\"", "TC8: Completed (was Overdue & Urgent)", new string[0])]
-        [Xunit.InlineDataAttribute("9", "\"\"", "\"Today - 1 day\"", "\"not completed\"", "0", "1", "\"performed\"", "TC9: Empty Description, Overdue", new string[0])]
-        [Xunit.InlineDataAttribute("12", "\"boundary overdue task\"", "\"YesterdayEndOfDay\"", "\"not completed\"", "0", "1", "\"performed\"", "TC12: Boundary: DueDate just Overdue", new string[0])]
-        [Xunit.InlineDataAttribute("13", "\"boundary due soon task\"", "\"DueSoonUpperBoundary\"", "\"not completed\"", "1", "0", "\"performed\"", "TC13: Boundary: DueDate just Due Soon (upper)", new string[0])]
-        public async System.Threading.Tasks.Task PriorityRecalculationBasedOnDueDateKeywordsAndCompletionStatus(string taskId, string description, string dueDateExpression, string isCompletedState, string initialPriority, string newPriority, string updateStatus, string rule, string[] exampleTags)
+        [Xunit.InlineDataAttribute("1", "\"urgent task\"", "-1", "false", "0", "2", "true", new string[0])]
+        [Xunit.InlineDataAttribute("2", "\"critical task\"", "-1", "false", "2", "2", "false", new string[0])]
+        [Xunit.InlineDataAttribute("3", "\"urgent critical task\"", "-1", "false", "0", "2", "true", new string[0])]
+        [Xunit.InlineDataAttribute("4", "\"plain task\"", "-1", "false", "0", "1", "true", new string[0])]
+        [Xunit.InlineDataAttribute("5", "\"plain task due soon\"", "1", "false", "1", "0", "true", new string[0])]
+        [Xunit.InlineDataAttribute("6", "\"plain task far future\"", "3", "false", "0", "-1", "true", new string[0])]
+        [Xunit.InlineDataAttribute("7", "\"task with no due date\"", "", "false", "0", "-1", "true", new string[0])]
+        [Xunit.InlineDataAttribute("8", "\"urgent completed task\"", "-1", "true", "2", "-1", "true", new string[0])]
+        [Xunit.InlineDataAttribute("9", "\"\"", "-1", "false", "0", "1", "true", new string[0])]
+        [Xunit.InlineDataAttribute("12", "\"boundary overdue task\"", "-1", "false", "0", "1", "true", new string[0])]
+        [Xunit.InlineDataAttribute("13", "\"boundary due soon task\"", "1", "false", "1", "0", "true", new string[0])]
+        public async System.Threading.Tasks.Task PriorityRecalculationBasedOnDueDateKeywordsAndCompletionStatus(string taskId, string description, string dueDateOffsetDays, string isCompleted, string initialPriority, string newPriority, string updated, string[] exampleTags)
         {
             string[] tagsOfScenario = exampleTags;
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
             argumentsOfScenario.Add("TaskId", taskId);
             argumentsOfScenario.Add("Description", description);
-            argumentsOfScenario.Add("DueDateExpression", dueDateExpression);
-            argumentsOfScenario.Add("IsCompletedState", isCompletedState);
+            argumentsOfScenario.Add("DueDateOffsetDays", dueDateOffsetDays);
+            argumentsOfScenario.Add("IsCompleted", isCompleted);
             argumentsOfScenario.Add("InitialPriority", initialPriority);
             argumentsOfScenario.Add("NewPriority", newPriority);
-            argumentsOfScenario.Add("UpdateStatus", updateStatus);
-            argumentsOfScenario.Add("Rule", rule);
+            argumentsOfScenario.Add("Updated", updated);
             global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Priority recalculation based on due date, keywords, and completion status", null, tagsOfScenario, argumentsOfScenario, featureTags);
 #line 9
 this.ScenarioInitialize(scenarioInfo);
@@ -149,10 +148,10 @@ await this.FeatureBackgroundAsync();
   await testRunner.AndAsync(string.Format("the task description is \"{0}\"", description), ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
 #line hidden
 #line 12
-  await testRunner.AndAsync(string.Format("the task due date is \"{0}\"", dueDateExpression), ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
+  await testRunner.AndAsync(string.Format("the task has a due date offset of \"{0}\" days", dueDateOffsetDays), ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
 #line hidden
 #line 13
-  await testRunner.AndAsync(string.Format("the task is initially {0}", isCompletedState), ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
+  await testRunner.AndAsync(string.Format("the task is initially {0}", isCompleted), ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
 #line hidden
 #line 14
   await testRunner.AndAsync(string.Format("the task has an initial priority of {0}", initialPriority), ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
@@ -164,7 +163,7 @@ await this.FeatureBackgroundAsync();
   await testRunner.ThenAsync(string.Format("the new priority of the task should be {0}", newPriority), ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
 #line hidden
 #line 17
-  await testRunner.AndAsync(string.Format("the database update should be {0}", updateStatus), ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
+  await testRunner.AndAsync(string.Format("the database update should be {0}", updated), ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();
@@ -198,10 +197,10 @@ await this.FeatureBackgroundAsync();
   await testRunner.AndAsync("the task description is null", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
 #line hidden
 #line 36
-  await testRunner.AndAsync("the task due date is \"Today - 1 day\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
+  await testRunner.AndAsync("the task has a due date offset of \"-1\" days", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
 #line hidden
 #line 37
-  await testRunner.AndAsync("the task is initially \"not completed\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
+  await testRunner.AndAsync("the task is initially false", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
 #line hidden
 #line 38
   await testRunner.AndAsync("the task has an initial priority of 0", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
@@ -213,7 +212,7 @@ await this.FeatureBackgroundAsync();
   await testRunner.ThenAsync("an exception should be thrown", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
 #line hidden
 #line 41
-  await testRunner.AndAsync("the database update should be \"skipped\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
+  await testRunner.AndAsync("the database update should be false", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();
@@ -250,7 +249,7 @@ await this.FeatureBackgroundAsync();
   await testRunner.ThenAsync("an exception should be thrown indicating \"Task not found\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
 #line hidden
 #line 47
-  await testRunner.AndAsync("the database update should be \"skipped\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
+  await testRunner.AndAsync("the database update should be false", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();

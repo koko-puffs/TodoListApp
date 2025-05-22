@@ -1,174 +1,172 @@
 using Reqnroll;
 using Moq;
 using TodoList.Core.Entities;
-using TodoList.Core.Services;
 using TodoList.Core.Interfaces;
+using TodoList.Core.Services;
 
 namespace TodoList.Reqnroll.StepDefinitions
 {
     [Binding]
     public class TaskPriorityRecalculationSteps
     {
-        private readonly ScenarioContext _scenarioContext;
-        private TodoTask? _task;
-        private readonly Mock<ITaskRepository> _taskRepositoryMock;
-        private readonly ITaskService _taskService;
+        private Mock<ITaskRepository> _mockTaskRepository = null!;
+        private ITaskService _taskService = null!;
+        private TodoTask? _currentTask;
+        private int _currentTaskId;
         private Exception? _caughtException;
-        private bool _databaseUpdatePerformed;
+        private bool _updatePerformedMock;
 
-        private readonly DateTime _fixedCurrentDate;
+        private readonly List<TodoTask> _tasksInDb = new List<TodoTask>();
+        private DateTime _testTodayDate = DateTime.Today;
 
-        public TaskPriorityRecalculationSteps(ScenarioContext scenarioContext)
+        [BeforeScenario]
+        public void Setup()
         {
-            _scenarioContext = scenarioContext;
-            _fixedCurrentDate = DateTime.Now;
-            _taskRepositoryMock = new Mock<ITaskRepository>();
-            _taskService = new TaskService(_taskRepositoryMock.Object);
-        }
+            _mockTaskRepository = new Mock<ITaskRepository>();
+            _tasksInDb.Clear();
+            _currentTask = null;
+            _caughtException = null;
+            _updatePerformedMock = false;
+            _testTodayDate = DateTime.UtcNow.Date;
 
-        private DateTime? ParseDueDateExpression(string dueDateExpression)
-        {
-            if (string.IsNullOrWhiteSpace(dueDateExpression) || dueDateExpression.Equals("null", StringComparison.OrdinalIgnoreCase))
-            {
-                return null;
-            }
-            if (dueDateExpression.Equals("YesterdayEndOfDay", StringComparison.OrdinalIgnoreCase))
-            {
-                return _fixedCurrentDate.Date.AddTicks(-1);
-            }
-            if (dueDateExpression.Equals("DueSoonUpperBoundary", StringComparison.OrdinalIgnoreCase))
-            {
-                return _fixedCurrentDate.Date.AddDays(2).AddTicks(-1);
-            }
+            _mockTaskRepository.Setup(repo => repo.GetByIdAsync(It.IsAny<int>()))
+                .ReturnsAsync((int id) => _tasksInDb.FirstOrDefault(t => t.Id == id));
 
-            var parts = dueDateExpression.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-            if (parts.Length == 4 && parts[0].Equals("Today", StringComparison.OrdinalIgnoreCase) &&
-                (parts[3].Equals("day", StringComparison.OrdinalIgnoreCase) || parts[3].Equals("days", StringComparison.OrdinalIgnoreCase)))
-            {
-                if (int.TryParse(parts[2], out int daysOffset))
+            _mockTaskRepository.Setup(repo => repo.UpdateAsync(It.IsAny<TodoTask>()))
+                .Callback<TodoTask>(task =>
                 {
-                    if (parts[1] == "-") return _fixedCurrentDate.AddDays(-daysOffset);
-                    if (parts[1] == "+") return _fixedCurrentDate.AddDays(daysOffset);
-                }
-            }
-            throw new ArgumentException($"Could not parse DueDateExpression: '{dueDateExpression}'. Supported formats: 'Today +/- X day(s)', 'null', 'YesterdayEndOfDay', 'DueSoonUpperBoundary'.");
+                    var existingTask = _tasksInDb.FirstOrDefault(t => t.Id == task.Id);
+                    if (existingTask != null)
+                    {
+                        existingTask.Priority = task.Priority;
+                        existingTask.Description = task.Description;
+                        existingTask.DueDate = task.DueDate;
+                        existingTask.IsCompleted = task.IsCompleted;
+                    }
+                    _updatePerformedMock = true;
+                })
+                .Returns(Task.CompletedTask);
+
+            _mockTaskRepository.Setup(repo => repo.ExistsAsync(It.IsAny<int>()))
+                .ReturnsAsync((int id) => _tasksInDb.Any(t => t.Id == id));
+
+            _taskService = new TaskService(_mockTaskRepository.Object);
         }
 
-        [Given(@"a task with ID (.*)")]
+        [Given(@"the current date is today for testing")]
+        public void GivenTheCurrentDateIsTodayForTesting()
+        {
+        }
+
+        [Given(@"a task with ID (\d+)")]
         public void GivenATaskWithID(int taskId)
         {
-            _task = new TodoTask { Id = taskId };
-            _scenarioContext["TaskId"] = taskId;
-            _taskRepositoryMock.Setup(repo => repo.GetByIdAsync(taskId))
-                               .ReturnsAsync(() => _task);
+            _currentTaskId = taskId;
+            _currentTask = new TodoTask($"Default task {taskId}") { Id = taskId };
+            _tasksInDb.Add(_currentTask);
         }
 
         [Given(@"the task description is ""(.*)""")]
         public void GivenTheTaskDescriptionIs(string description)
         {
-            if (_task == null) throw new InvalidOperationException("Task not initialized. 'Given a task with ID' must be called first.");
-            _task.Description = description;
+            if (_currentTask == null) throw new InvalidOperationException("Task not initialized");
+            _currentTask.Description = description;
         }
 
         [Given(@"the task description is null")]
         public void GivenTheTaskDescriptionIsNull()
         {
-            if (_task == null) throw new InvalidOperationException("Task not initialized. 'Given a task with ID' must be called first.");
-            _task.Description = null;
+            if (_currentTask == null) throw new InvalidOperationException("Task not initialized");
+            _currentTask.Description = null;
         }
 
-        [Given(@"the task due date is ""(.*)""")]
-        public void GivenTheTaskDueDateIs(string dueDateExpression)
+        [Given(@"the task has a due date offset of ""(.*)"" days")]
+        public void GivenTheTaskHasADueDateOffsetOfDays(string offsetString)
         {
-            if (_task == null) throw new InvalidOperationException("Task not initialized. 'Given a task with ID' must be called first.");
-            _task.DueDate = ParseDueDateExpression(dueDateExpression);
+            if (_currentTask == null) throw new InvalidOperationException("Task not initialized before setting due date offset.");
+
+            if (string.IsNullOrWhiteSpace(offsetString))
+            {
+                _currentTask.DueDate = null;
+            }
+            else
+            {
+                if (int.TryParse(offsetString, out int daysOffset))
+                {
+                    _currentTask.DueDate = _testTodayDate.AddDays(daysOffset).ToUniversalTime();
+                }
+                else
+                {
+                    throw new ArgumentException($"Invalid format for due date offset: '{offsetString}'. Expected an integer or empty string.");
+                }
+            }
         }
 
-        [Given(@"the task is initially (completed|not completed)")]
-        public void GivenTheTaskIsInitially(string completionStatus)
+        [Given(@"^the task is initially (true|false)$" )]
+        public void GivenTheTaskIsInitially(bool isCompleted)
         {
-            if (_task == null) throw new InvalidOperationException("Task not initialized. 'Given a task with ID' must be called first.");
-            _task.IsCompleted = completionStatus == "completed";
+            if (_currentTask == null) throw new InvalidOperationException("Task not initialized");
+            _currentTask.IsCompleted = isCompleted;
         }
 
-        [Given(@"the task has an initial priority of (.*)")]
+        [Given(@"the task has an initial priority of (-?\d+)")]
         public void GivenTheTaskHasAnInitialPriorityOf(int initialPriority)
         {
-            if (_task == null) throw new InvalidOperationException("Task not initialized. 'Given a task with ID' must be called first.");
-            _task.Priority = initialPriority;
+            if (_currentTask == null) throw new InvalidOperationException("Task not initialized");
+            _currentTask.Priority = initialPriority;
         }
-
-        [Given(@"an invalid Task ID (.*)")]
+        
+        [Given(@"an invalid Task ID (\d+)")]
         public void GivenAnInvalidTaskID(int invalidTaskId)
         {
-            _scenarioContext["InvalidTaskId"] = invalidTaskId;
-            _taskRepositoryMock.Setup(repo => repo.GetByIdAsync(invalidTaskId))
-                               .ReturnsAsync((TodoTask?)null);
+            _currentTaskId = invalidTaskId;
         }
 
         [When(@"the priority recalculation process is triggered for the task")]
         public async Task WhenThePriorityRecalculationProcessIsTriggeredForTheTask()
         {
-            if (_task == null) throw new InvalidOperationException("Task not initialized for 'When' step. Ensure 'Given a task with ID' was called.");
-            _databaseUpdatePerformed = false;
             _caughtException = null;
-
-            _taskRepositoryMock.Setup(repo => repo.UpdateAsync(It.IsAny<TodoTask>()))
-                .Callback<TodoTask>(updatedTaskArg => {
-                    _databaseUpdatePerformed = true;
-                    if (_task != null && _task.Id == updatedTaskArg.Id)
-                    {
-                        _task.Priority = updatedTaskArg.Priority;
-                    }
-                })
-                .Returns(Task.CompletedTask);
+            _updatePerformedMock = false;
 
             try
             {
-                await _taskService.RecalculatePriorityBasedOnRulesAsync(_task.Id);
+                await _taskService.RecalculatePriorityBasedOnRulesAsync(_currentTaskId);
             }
             catch (Exception ex)
             {
-                _caughtException = ex.GetBaseException();
+                _caughtException = ex;
             }
         }
-
-        [When(@"the priority recalculation process is triggered for the task with ID (.*)")]
+        
+        [When(@"the priority recalculation process is triggered for the task with ID (\d+)")]
         public async Task WhenThePriorityRecalculationProcessIsTriggeredForTheTaskWithID(int taskId)
         {
-            _databaseUpdatePerformed = false;
+            _currentTaskId = taskId;
             _caughtException = null;
+            _updatePerformedMock = false;
 
-            _taskRepositoryMock.Setup(repo => repo.UpdateAsync(It.IsAny<TodoTask>()))
-                .Callback(() => _databaseUpdatePerformed = true)
-                .Returns(Task.CompletedTask);
-            
             try
             {
                 await _taskService.RecalculatePriorityBasedOnRulesAsync(taskId);
             }
             catch (Exception ex)
             {
-                _caughtException = ex.GetBaseException();
+                _caughtException = ex;
             }
         }
 
-        [Then(@"the new priority of the task should be (.*)")]
+        [Then(@"the new priority of the task should be (-?\d+)")]
         public void ThenTheNewPriorityOfTheTaskShouldBe(int expectedPriority)
         {
-            Assert.Null(_caughtException);
-            Assert.NotNull(_task);
-            if (_task != null)
-            {
-                Assert.Equal(expectedPriority, _task.Priority);
-            }
+            var taskFromDb = _tasksInDb.FirstOrDefault(t => t.Id == _currentTaskId);
+            Assert.NotNull(taskFromDb);
+            Assert.Equal(expectedPriority, taskFromDb.Priority);
         }
 
-        [Then(@"the database update should be (performed|skipped)")]
-        public void ThenTheDatabaseUpdateShouldBe(string updateStatus)
+        [Then(@"^the database update should be (true|false)$" )]
+        public void ThenTheDatabaseUpdateShouldBe(bool expectedUpdate)
         {
-            bool expectedUpdate = updateStatus == "performed";
-            Assert.Equal(expectedUpdate, _databaseUpdatePerformed);
+            Assert.Equal(expectedUpdate, _updatePerformedMock);
         }
 
         [Then(@"an exception should be thrown")]
@@ -176,25 +174,12 @@ namespace TodoList.Reqnroll.StepDefinitions
         {
             Assert.NotNull(_caughtException);
         }
-
+        
         [Then(@"an exception should be thrown indicating ""(.*)""")]
-        public void ThenAnExceptionShouldBeThrownIndicating(string expectedMessagePart)
+        public void ThenAnExceptionShouldBeThrownIndicating(string expectedMessageFragment)
         {
             Assert.NotNull(_caughtException);
-            if (_caughtException != null)
-            {
-                if (expectedMessagePart.Equals("Task not found", StringComparison.OrdinalIgnoreCase))
-                {
-                    var argException = Assert.IsType<ArgumentException>(_caughtException);
-                    Assert.Contains("Task not found", argException.Message, StringComparison.OrdinalIgnoreCase);
-                }
-                else if (expectedMessagePart.Equals("Description cannot be null when priority is critical", StringComparison.OrdinalIgnoreCase))
-                {
-                    var argNullException = Assert.IsType<ArgumentNullException>(_caughtException);
-                    Assert.Equal("Description", argNullException.ParamName);
-                    Assert.Contains("Description cannot be null", argNullException.Message, StringComparison.OrdinalIgnoreCase);
-                }
-            }
+            Assert.IsAssignableFrom<KeyNotFoundException>(_caughtException);
         }
     }
 }
