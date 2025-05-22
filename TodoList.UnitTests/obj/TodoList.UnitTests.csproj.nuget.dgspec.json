@@ -178,8 +178,8 @@
               "C:\\Users\\aerom\\Downloads\\TodoListApp\\TodoList.Infrastructure\\TodoList.Infrastructure.csproj": {
                 "projectPath": "C:\\Users\\aerom\\Downloads\\TodoListApp\\TodoList.Infrastructure\\TodoList.Infrastructure.csproj"
               },
-              "c:\\Users\\aerom\\Downloads\\TodoListApp\\TodoList.WebApi\\TodoList.WebApi.csproj": {
-                "projectPath": "c:\\Users\\aerom\\Downloads\\TodoListApp\\TodoList.WebApi\\TodoList.WebApi.csproj"
+              "C:\\Users\\aerom\\Downloads\\TodoListApp\\TodoList.WebApi\\TodoList.WebApi.csproj": {
+                "projectPath": "C:\\Users\\aerom\\Downloads\\TodoListApp\\TodoList.WebApi\\TodoList.WebApi.csproj"
               }
             }
           }
@@ -241,14 +241,14 @@
         }
       }
     },
-    "c:\\Users\\aerom\\Downloads\\TodoListApp\\TodoList.WebApi\\TodoList.WebApi.csproj": {
+    "C:\\Users\\aerom\\Downloads\\TodoListApp\\TodoList.WebApi\\TodoList.WebApi.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "c:\\Users\\aerom\\Downloads\\TodoListApp\\TodoList.WebApi\\TodoList.WebApi.csproj",
+        "projectUniqueName": "C:\\Users\\aerom\\Downloads\\TodoListApp\\TodoList.WebApi\\TodoList.WebApi.csproj",
         "projectName": "TodoList.WebApi",
-        "projectPath": "c:\\Users\\aerom\\Downloads\\TodoListApp\\TodoList.WebApi\\TodoList.WebApi.csproj",
+        "projectPath": "C:\\Users\\aerom\\Downloads\\TodoListApp\\TodoList.WebApi\\TodoList.WebApi.csproj",
         "packagesPath": "C:\\Users\\aerom\\.nuget\\packages\\",
-        "outputPath": "c:\\Users\\aerom\\Downloads\\TodoListApp\\TodoList.WebApi\\obj\\",
+        "outputPath": "C:\\Users\\aerom\\Downloads\\TodoListApp\\TodoList.WebApi\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
